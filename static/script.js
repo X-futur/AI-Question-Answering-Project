@@ -3,6 +3,7 @@ const synth = window.speechSynthesis;  // 调用浏览器原生 Web Speech API �
 
 // 执行朗读核心函数
 function speak(content) {
+    // 利用浏览器自带的语音合成接口
     let utterance = new SpeechSynthesisUtterance(content); // 创建语音实例
     utterance.lang = 'zh-CN';     // 设置语言为中文
     utterance.volume = 1;         // 音量 (0 ~ 1)
@@ -64,7 +65,16 @@ function doAnswer() {
     document.getElementById("chatbox").append(answer);
 
     let content = document.getElementById("question").value;
-    params = { "content": content, "search": false };
+    // params = { "content": content, "search": false };
+
+    // 引入联网搜索功能
+    let checkbox = document.getElementById("net-search");
+    if (checkbox.checked) {
+        params = { "content": content, "search": true }
+    }
+    else {
+        params = { "content": content, "search": false }
+    }
 
     // 2. 发送 POST 请求连接后端的 /stream 接口
     fetch("/stream", {

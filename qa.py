@@ -4,6 +4,8 @@ import json, os
 from openai import OpenAI
 from dotenv import load_dotenv
 
+from model import aliyun_search
+
 load_dotenv()
 # 创建路由对象，方便在主应用中挂载
 qa = APIRouter()
@@ -20,7 +22,14 @@ def stream_chat(question: dict=Body()):
     # 读取JSON参数的值
     content = question['content']
     search = question['search']
-    message = {"role": "user", "content": content}
+
+    # message = {"role": "user", "content": content}
+    # 把搜索结果作为提示词一并传入大模型
+    if search == True:
+      search_result = aliyun_search(content)
+      message = {"role": "user", "content": f"请使用以下内容：\n{search_result}\n，并基于用户的提问：\n{content}\n来进行回答"}
+    else:
+      message = {"role": "user", "content": content}
     
     def stream_chat():
         # 将当前消息加入历史消息队列中
