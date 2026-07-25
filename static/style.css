@@ -1,0 +1,81 @@
+#chatbox {
+    width: 800px;
+    height: 580px;
+    border: solid 1px gainsboro;
+    margin: auto;
+    overflow-y: scroll;
+}
+
+#bottom {
+    width: 800px;
+    height: 120px;
+    border: solid 1px gainsboro;
+    margin: auto;
+    margin-top: 15px;
+}
+
+#question {
+    width: 560px;
+    height: 96px;
+    border: solid 1px darkgrey;
+    margin: 9px;
+    border-radius: 5px;
+}
+
+#qa-button {
+    width: 90px;
+    height: 35px;
+    background-color: rgb(38, 167, 124);
+    border: 0;
+    border-radius: 5px;
+    margin-top: 20px;
+    margin-right: 30px;
+    margin-bottom: 20px;
+}
+
+#welcome {
+    width: 70%;
+    border: solid 0px blue;
+    margin: 10px;
+    min-height: 30px;
+    padding: 10px;
+    float: left;
+    border-radius: 15px;
+}
+
+.ask-box {
+    width: 65%;
+    border: solid 0px green;
+    margin: 10px;
+    min-height: 30px;
+    padding: 10px;
+    float: right;
+    border-radius: 15px;
+    background-color: lightseagreen;
+}
+
+.answer-box {
+    width: 70%;
+    border: solid 0px blue;
+    margin: 10px;
+    min-height: 30px;
+    padding: 10px;
+    float: left;
+    border-radius: 15px;
+    background-color: #e5e5ea;
+}
+
+.read-button {
+    width: 50px;
+    height: 28px;
+    background-color: darkgrey;
+    margin-left: 20px;
+    border: 0px;
+    border-radius: 5px;
+}
+
+#preview {
+    width: 100px;
+    height: 100px;
+    margin: 10px 0 0 10px;
+}

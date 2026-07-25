@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WoniuAI智能问答</title>
+    <!--引用JavaScript代码和CSS-->
+    <script src="/static/script.js"></script>
+    <link rel="stylesheet" href="/static/style.css" type="text/css">
+</head>
+
+<body>
+    <div id="chatbox">
+        <!--打开界面的提示词-->
+        <div class="answer-box">您好，欢迎访问蜗牛学苑AI智能问答系统，我是您的智能助手小牛，你可以问我任何问题，或者让我为您生成或识别图像等，我将尽力帮您解决。 </div>
+    </div>
+
+    <div id="bottom">
+        <!--实现图像识别时的预览图和文件上传组件，默认均不显示-->
+        <div style="float: left; display: none;" id="imageDiv">
+            <input type="file" id="imageInput" onchange="saveAndPreview()" style="display: none;">
+            <img id="preview" style="display: none;">
+        </div>
+
+        <div style="float: left">
+            <textarea id="question" onkeyup="doEnter(event)">你好，你是谁？</textarea>
+        </div>
+        <div style="float: right; text-align: center; width: 210px">
+            <button id="qa-button" onclick="doAsk()">智能问答</button> <br />
+            <button id="recognize-image" onclick="addImage()">识图</button>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <button id="generate-image" onclick="generateImage()">生图</button>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="checkbox" id="net-search" />联网
+        </div>
+    </div>
+</body>
+
+</html>
