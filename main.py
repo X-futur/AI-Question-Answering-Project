@@ -3,7 +3,7 @@ from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from qa import qa
 from recognize import recog
-from test import generate
+from generate import generate
 import uvicorn
 from dotenv import load_dotenv
 

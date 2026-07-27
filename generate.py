@@ -1,28 +1,53 @@
-from fastapi import APIRouter, Body
-from http import HTTPStatus
-import os, requests
-from dashscope import ImageSynthesis  # 引入SDK
+import os
+import dashscope
 from dotenv import load_dotenv
+from fastapi import APIRouter, Body
+from dashscope.aigc.image_generation import ImageGeneration
+from dashscope.api_entities.dashscope_response import Message
+
 
 load_dotenv()
 generate = APIRouter()
 
-# 此功能使用通义万相v2实现，图像生成不支持OpenAI的SDK，需要使用Dashscope的SDK
-# 图像生成不存在流式响应，因为响应的内容是一张生成的图像
 @generate.post("/generate")
 def generate_image(data: dict=Body()):
-    api_key=os.getenv("Dashscope_API_Key")
-    rsp = ImageSynthesis.call(api_key=api_key, # type: ignore
-            model="wanx2.1-t2i-turbo",    # 模型名称
-            prompt=data['content'],        # 提示词
-            n=1,                           # 生成图像数量
-            size='1024*1024')              # 图像尺寸
-    if rsp.status_code == HTTPStatus.OK:
-        # 在images目录中保存图像
-        for result in rsp.output.results:
-          # result.url为生成图像的在线地址
-          file_name = result.url.split('/')[-1].split("?")[0]
-          with open(f'./static/images/{file_name}', 'wb') as f:
-              f.write(requests.get(result.url).content)
-    # 将图像的URL响应给前端，以便前端进行渲染
-    return {"message":"successful", "image_url": f"/static/images/{file_name}"}
+    api_key = os.getenv('Dashscope_API_Key')
+    dashscope.base_http_api_url = 'https://llm-fmg6raj85fkh752m.cn-beijing.maas.aliyuncs.com/api/v1'
+
+    text = data['content']
+
+    message = Message(
+        role="user",
+        content=[
+            {"text": text}
+        ]
+    )
+
+    response = ImageGeneration.async_call(
+        model="wan2.7-image-pro",
+        api_key=api_key, # type: ignore
+        messages=[message],
+        enable_sequential=False,
+        n=1,
+        size="2K"
+    )
+    
+    if response.status_code == 200: # type: ignore
+        print(f"任务提交成功，任务ID: {response.output.task_id}") # type: ignore
+        
+        # 等待任务完成
+        status = ImageGeneration.wait(task=response, api_key=api_key) # type: ignore
+        
+        if status.output.task_status == "SUCCEEDED":
+            print("任务完成!")
+            print(f"结果:")
+            print(status)
+        else:
+            print(f"任务失败，状态: {status.output.task_status}")
+    else:
+        print(f"任务创建失败: {response.code} - {response.message}") # type: ignore
+        return {"message": "failed"}
+
+    image_url = status["output"]["choices"][0]["message"]["content"][0]["image"]
+
+    return {"message": "success", "image_url": image_url}
