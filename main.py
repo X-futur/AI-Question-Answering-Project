@@ -2,6 +2,8 @@ from fastapi import FastAPI, Request
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from qa import qa
+from recognize import recog
+from test import generate
 import uvicorn
 from dotenv import load_dotenv
 
@@ -13,8 +15,10 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 # 指定 HTML 模板文件存放在本地的 templates 文件夹中
 templates = Jinja2Templates(directory="templates")
 
-# 路由注册，把qa.py注册进来
+# 后端路由注册，把qa.py注册进来
 app.include_router(qa)
+app.include_router(recog)
+app.include_router(generate)
 
 # 首页路由渲染
 @app.get('/')
