@@ -57,6 +57,7 @@ AI-Question-Answering-Project/
 ```bash
 pip install fastapi uvicorn python-multipart openai dashscope python-dotenv requests
 ```
+安装 Jinja2：`pip install jinja2`
 
 核心依赖说明：
 
@@ -85,96 +86,14 @@ QQ_Mail_Password = "your-qq-smtp-authorization-code"
 
 ### 4. 启动服务
 
-需要先创建一个主入口文件 `main.py` 来挂载各路由模块，例如：
-
-```python
-from fastapi import FastAPI
-from fastapi.staticfiles import StaticFiles
-from qa import qa
-from generate import generate
-from recognize import recog
-
-app = FastAPI(title="AI 智能问答系统")
-
-app.mount("/static", StaticFiles(directory="static"), name="static")
-
-app.include_router(qa)
-app.include_router(generate)
-app.include_router(recog)
-```
-
 启动命令：
 
 ```bash
-uvicorn main:app --reload --host 0.0.0.0 --port 8000
+python main.py
 ```
 
-然后访问 `http://localhost:8000/` 即可。
-
-### 5. （可选）前端页面托管
-
-由于 `chat.html` 位于 `templates/` 目录，需在 `main.py` 中增加页面路由：
-
-```python
-from fastapi.responses import HTMLResponse
-from fastapi.templating import Jinja2Templates
-
-templates = Jinja2Templates(directory="templates")
-
-@app.get("/", response_class=HTMLResponse)
-async def root():
-    return templates.TemplateResponse("chat.html", {"request": {}})
-```
-
-安装 Jinja2：`pip install jinja2`
-
-## API 接口
-
-### POST /stream — 智能问答
-
-**请求体：**
-
-```json
-{
-  "content": "你的问题",
-  "search": true
-}
-```
-
-- `search: true` 开启联网搜索，`false` 关闭
-- 响应为 `text/event-stream` 流式 JSON，每行一个 `{"content": "增量文本"}`
-
-### POST /generate — 图像生成
-
-**请求体：**
-
-```json
-{
-  "content": "描述图像的提示词"
-}
-```
-
-**响应：**
-
-```json
-{
-  "message": "successful",
-  "image_url": "/static/images/filename.png"
-}
-```
-
-### POST /recognize — 图像识别
-
-**请求体：**
-
-```json
-{
-  "base64": "data:image/...base64编码...",
-  "content": "对识别内容的要求描述"
-}
-```
-
-**响应：** 流式 JSON，格式同 `/stream`
+然后访问 `http://127.0.0.1:8000/` 即可。
+访问 `http://127.0.0.1:8000/docs` 即可查看 `SwaggerUI` 接口文档
 
 ## 核心设计说明
 
